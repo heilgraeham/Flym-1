@@ -1,1 +1,16 @@
 language: android
+jdk: oraclejdk7
+android:
+	components:
+
+	  # tools is required twice
+	  - tools
+	  - platform-tools
+	  - tools
+
+	  - build-tools-25.0.2
+
+	  #android sdk version
+	  - android-25
+      - extra-google-google_play_services
+
