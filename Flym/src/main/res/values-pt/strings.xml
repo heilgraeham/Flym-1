@@ -167,7 +167,7 @@
     <string name="all_feeds">Todos os feeds (incl. futuros)</string>
 
     <plurals name="number_of_new_entries">
-        <item quantity="one">Uma nova entrada</item>
+        <item quantity="one">%d nova entrada</item>
         <item quantity="other">%d novas entradas</item>
     </plurals>
 
