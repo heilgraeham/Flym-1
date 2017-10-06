@@ -1,5 +1,8 @@
 language: android
 
+script:
+    - ./gradlew assembleDebug
+
 android:
   components:
     # tools is required twice
@@ -12,6 +15,3 @@ android:
     #android sdk version
     - android-25
     - extra-google-google_play_services
-
-  script:
-    - ./gradlew clean assembleDebug
