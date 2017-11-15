@@ -37,10 +37,11 @@ script:
     - ./gradlew connectedAndroidTest -PdisablePreDex --stacktrace
 
 before_install:
-  - pip install --user codecov
+    - pip install --user codecov
 
-  after_sucess:
+after_sucess:
 #    - bash <(curl -s https://codecod.io/bash)
     - codecov
 
-  after_failure: "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
+after_failure:
+    - "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
