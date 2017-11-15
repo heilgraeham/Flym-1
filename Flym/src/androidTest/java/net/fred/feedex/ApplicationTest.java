@@ -1,9 +1,15 @@
 package net.fred.feedex;
 
 import android.app.Application;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Handler;
 import android.test.ApplicationTestCase;
 
 import net.fred.feedex.parser.RssAtomParser;
+import net.fred.feedex.provider.DatabaseHelper;
+import net.fred.feedex.provider.FeedData;
 import net.fred.feedex.utils.ArticleTextExtractor;
 import net.fred.feedex.utils.HtmlUtils;
 import net.fred.feedex.utils.NetworkUtils;
@@ -36,17 +42,17 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         }
     }
 
-    public void testArticleTextExtractorThairath() throws Exception {
-        String link = "http://www.thairath.co.th/content/544335";
-        HttpURLConnection connection = NetworkUtils.setupConnection(link);
-
-        String mobilizedHtml = ArticleTextExtractor.extractContent(connection.getInputStream(), "ฝนฟ้าคะนอง ฝนหนักบาง");
-        System.out.println(mobilizedHtml);
-        mobilizedHtml = HtmlUtils.improveHtmlContent(mobilizedHtml, NetworkUtils.getBaseUrl(link));
-        if (!mobilizedHtml.contains("http://www.thairath.co.th/media/NjpUs24nCQKx5e1D74racLG80eobXUM1FQb68fZ0eH7.jpg")) {
-            throw new Exception("no og image");
-        }
-    }
+//    public void testArticleTextExtractorThairath() throws Exception {
+//        String link = "http://www.thairath.co.th/content/544335";
+//        HttpURLConnection connection = NetworkUtils.setupConnection(link);
+//
+//        String mobilizedHtml = ArticleTextExtractor.extractContent(connection.getInputStream(), "ฝนฟ้าคะนอง ฝนหนักบาง");
+//        System.out.println(mobilizedHtml);
+//        mobilizedHtml = HtmlUtils.improveHtmlContent(mobilizedHtml, NetworkUtils.getBaseUrl(link));
+//        if (!mobilizedHtml.contains("http://www.thairath.co.th/media/NjpUs24nCQKx5e1D74racLG80eobXUM1FQb68fZ0eH7.jpg")) {
+//            throw new Exception("no og image");
+//        }
+//    }
 
     public void testArticleTextExtractorNiceOppai() throws Exception {
         String link = "http://www.niceoppai.net/bleach/654/?all";
@@ -57,9 +63,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         mobilizedHtml = HtmlUtils.improveHtmlContent(mobilizedHtml, NetworkUtils.getBaseUrl(link));
     }
 
-    public void testRssAtomParserPubdate() throws Exception {
-        RssAtomParser parser = new RssAtomParser(new Date(), 0, "1", "test2", "http://localhost/", false);
-        assertEquals("Fri Dec 04 08:06:05 GMT+07:00 2015", parser.parsePubdateDate("Fri, 04 Dec 2015 01:06:05 +0000").toString());
-    }
+//    public void testRssAtomParserPubdate() throws Exception {
+//        RssAtomParser parser = new RssAtomParser(new Date(), 0, "1", "test2", "http://localhost/", false);
+//        assertEquals("Fri Dec 04 08:06:05 GMT+07:00 2015", parser.parsePubdateDate("Fri, 04 Dec 2015 01:06:05 +0000").toString());
+//    }
 
 }

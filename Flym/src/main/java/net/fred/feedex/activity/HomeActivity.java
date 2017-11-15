@@ -42,6 +42,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -91,9 +92,9 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
 
         setContentView(R.layout.activity_home);
 
-        mMagazineFragment = new MagazineListFragment();
         mEntriesFragment = new EntriesListFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.home_fragment_frame, mEntriesFragment).commit();
+        mMagazineFragment = new MagazineListFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_frame, mEntriesFragment).commit();
 
         mTitle = getTitle();
 
@@ -277,15 +278,16 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
         //boolean magazineFragment = false; //this value will be set to true if moving from magazine to entry list
 
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.home_fragment_frame);
-        if(currentFragment instanceof EntriesListFragment && position == 3) { //load magazine fragment
+        if((currentFragment == null || !currentFragment.equals(mMagazineFragment)) && position == 3) { //load magazine fragment
+            mMagazineFragment = new MagazineListFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_frame, mMagazineFragment).commit();
-            currentFragment = mMagazineFragment;
+            Log.d("Loaded Frag", "Loading Magazine");
         }
-        else if(currentFragment instanceof MagazineListFragment && position != 3) { //load entries fragment
+        else if((currentFragment == null || !currentFragment.equals(mEntriesFragment)) && position != 3) { //load entries fragment
+            mEntriesFragment = new EntriesListFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_frame, mEntriesFragment).commit();
-            currentFragment = mEntriesFragment;
+            Log.d("Loaded Frag", "Loading Entries");
         }
-
 
         switch (position) {
             case 0:
@@ -314,7 +316,12 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
         }
 
         if (newUri != null && !newUri.equals(mEntriesFragment.getUri())) {
-            mEntriesFragment.setData(newUri, showFeedInfo);
+            if(getSupportFragmentManager().findFragmentById(R.id.home_fragment_frame).equals(mEntriesFragment)) {
+                mEntriesFragment.setData(newUri, showFeedInfo);
+            }
+            else {
+                mEntriesFragment.setDataValues(newUri, showFeedInfo);
+            }
         }
 
         mDrawerList.setItemChecked(position, true);
@@ -358,11 +365,15 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
                 case 2:
                     getSupportActionBar().setTitle(R.string.favorites);
                     break;
+                case 3:
+                    getSupportActionBar().setTitle(R.string.magazines);
+                    break;
                 default:
                     getSupportActionBar().setTitle(mTitle);
                     break;
             }
         }
+        Log.d("Loaded Frag", "entries loaded? - " + getSupportFragmentManager().findFragmentById(R.id.home_fragment_frame).equals(mEntriesFragment));
 
         // Put the good menu
         invalidateOptionsMenu();

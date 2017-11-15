@@ -104,6 +104,7 @@
     <string name="all_entries">All entries</string>
     <string name="no_entries">No entries</string>
     <string name="favorites">Starred</string>
+    <string name="magazines">Magazines</string>
     <string name="context_menu_share_starred">Share starred entries</string>
     <string name="menu_star">Star</string>
     <string name="menu_unstar">Unstar</string>
@@ -208,8 +209,4 @@
         <item>Only over Wi-Fi</item>
         <item>Always</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>
