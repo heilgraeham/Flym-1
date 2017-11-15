@@ -32,9 +32,9 @@ script:
     - ./gradlew assembleDebug jacocoTestReport assembleAndroidTest
     - echo "Travis branch is $TRAVIS_BRANCH"    #Print out which branch it is.
     - echo "Travis branch is in pull request $TRAVIS_PULL+REQUEST"    #Print out pull request number.
-    - android-wait-for-emulator             #Run wait for the emulator script.
-    - adb devices                           #Display list of devices
-    - adb shell input keyevent 82 &
+#    - android-wait-for-emulator             #Run wait for the emulator script.
+#    - adb devices                           #Display list of devices
+#    - adb shell input keyevent 82 &
     - ./gradlew connectedAndroidTest -PdisablePreDex --stacktrace
 
 before_install:
