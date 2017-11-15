@@ -61,4 +61,5 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         RssAtomParser parser = new RssAtomParser(new Date(), 0, "1", "test2", "http://localhost/", false);
         assertEquals("Fri Dec 04 08:06:05 GMT+07:00 2015", parser.parsePubdateDate("Fri, 04 Dec 2015 01:06:05 +0000").toString());
     }
+
 }
