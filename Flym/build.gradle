@@ -1,17 +1,16 @@
 apply plugin: 'com.android.application'
-apply plugin: 'jacoco-android'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "net.fred.feedex"
+        compileSdkVersion 25
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 64
         versionName "1.9.7"
-        multiDexEnabled true
     }
 
     lintOptions {
@@ -23,7 +22,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-
 
 //    Properties properties = new Properties()
 //    properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -49,14 +47,13 @@ android {
 
     buildTypes {
         debug {
-            testCoverageEnabled = true
+            testCoverageEnabled true
         }
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-			//signingConfig signingConfigs.release
-            testCoverageEnabled true
+//            signingConfig signingConfigs.release
         }
     }
 }
@@ -67,23 +64,18 @@ repositories {
     }
 }
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.2'
-    }
-}
-
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:+'
-    compile 'com.android.support:design:+'
-    compile 'com.google.android.gms:play-services-gcm:+'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.google.android.gms:play-services-gcm:11.0.4'
     compile 'org.jsoup:jsoup:+'
     compile 'com.github.bumptech.glide:glide:+'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:+'
     compile 'com.squareup.okhttp3:okhttp-urlconnection:+'
-    compile 'com.google.android.gms:play-services-auth:11.0.4'
+    compile 'com.android.support:support-v4:25.3.1'
+    // Stetho core
+    compile 'com.facebook.stetho:stetho:1.5.0'
+    //If you want to add a network helper
+    compile 'com.facebook.stetho:stetho-okhttp:1.5.0'
 }
