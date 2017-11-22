@@ -36,11 +36,12 @@ before_script:
     - emulator -avd test -no-window &
     - android-wait-for-emulator
     - adb shell input keyevent 82 &
+
 script:
-    - ./gradlew clean test connectedAndroidTest
+    - ./gradlew build jacocoTestReport assembleAndroidTest
 
 before_install:
     - pip install --user codecov
 
 after_sucess:
-    - codecov
+    - bash <(curl -s https://codecov.io/bash)

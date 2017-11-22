@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 
@@ -166,14 +167,21 @@ public class NetworkUtils {
         return downloadPictures;
     }
 
-    public static String getBaseUrl(String link) {
-        String baseUrl = link;
+    public static String getBaseUrl(String link) throws MalformedURLException {
+
+
+        URL url = new URL(link);
+        String baseUrl =  url.getAuthority();
+        return baseUrl;
+
+
+        /*
         int index = link.indexOf('/', 8); // this also covers https://
         if (index > -1) {
             baseUrl = link.substring(0, index);
-        }
+        }*/
 
-        return baseUrl;
+
     }
 
     public static byte[] getBytes(InputStream inputStream) throws IOException {
