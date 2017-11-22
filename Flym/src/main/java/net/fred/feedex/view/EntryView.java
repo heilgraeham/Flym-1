@@ -141,7 +141,7 @@ public class EntryView extends WebView {
         mEntryViewMgr = manager;
     }
 
-    public void setHtml(long entryId, String title, String link, String contentText, String enclosure, String author, long timestamp, boolean preferFullText) {
+    public void setHtml(long entryId, String title, String link, String contentText, String enclosure, String author, long timestamp, boolean preferFullText, boolean hasComment) {
         if (PrefUtils.getBoolean(PrefUtils.DISPLAY_IMAGES, true)) {
             contentText = HtmlUtils.replaceImageURLs(contentText, entryId);
             if (getSettings().getBlockNetworkImage()) {
@@ -163,10 +163,10 @@ public class EntryView extends WebView {
         // }
 
         // do not put 'null' to the base url...
-        loadDataWithBaseURL("", generateHtmlContent(title, link, contentText, enclosure, author, timestamp, preferFullText), TEXT_HTML, Constants.UTF8, null);
+        loadDataWithBaseURL("", generateHtmlContent(title, link, contentText, enclosure, author, timestamp, preferFullText, hasComment), TEXT_HTML, Constants.UTF8, null);
     }
 
-    private String generateHtmlContent(String title, String link, String contentText, String enclosure, String author, long timestamp, boolean preferFullText) {
+    private String generateHtmlContent(String title, String link, String contentText, String enclosure, String author, long timestamp, boolean preferFullText, boolean hasComment) {
         StringBuilder content = new StringBuilder(CSS).append(BODY_START);
 
         if (link == null) {
@@ -200,6 +200,14 @@ public class EntryView extends WebView {
             content.append(LINK_BUTTON_START).append(link).append(LINK_BUTTON_MIDDLE).append(context.getString(R.string.see_link)).append(LINK_BUTTON_END);
         }
 
+        content.append(BUTTON_START);
+        if (hasComment) {
+            content.append("View Comment").append(BUTTON_MIDDLE).append("injectedJSObject.onClickViewComment();");
+        }
+        else {
+            content.append("Add Comment").append(BUTTON_MIDDLE).append("injectedJSObject.onClickAddComment();");
+        }
+        content.append(BUTTON_END);
         content.append(BUTTON_SECTION_END).append(BODY_END);
 
         return content.toString();
@@ -308,6 +316,10 @@ public class EntryView extends WebView {
 
         void onClickFullText();
 
+        void onClickViewComment();
+
+        void onClickAddComment();
+
         void onClickEnclosure();
 
         void onStartVideoFullScreen();
@@ -322,6 +334,16 @@ public class EntryView extends WebView {
         @JavascriptInterface
         public String toString() {
             return "injectedJSObject";
+        }
+
+        @JavascriptInterface
+        public void onClickViewComment() {
+            mEntryViewMgr.onClickViewComment();
+        }
+
+        @JavascriptInterface
+        public void onClickAddComment() {
+            mEntryViewMgr.onClickAddComment();
         }
 
         @JavascriptInterface
