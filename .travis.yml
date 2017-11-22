@@ -6,7 +6,6 @@ notifications:
 
 env:
   matrix:
-    - API=android-23 ABI=armeabi-v7a
     - API=android-24 ABI=armeabi-v7a
     - API=android-24 ABI=arm64-v8a
 
@@ -17,14 +16,9 @@ android:
     - tools
     - platform-tools
     - tools
-    #- build-tools-25.0.2
     - build-tools-26.0.2
-    #- sys-img-armeabi-v7a-android-24
-    #- sys-img-armeabi-v7a-google_apis-25
-    #- sys-img-armeabi-v7a-android-21
 
     #android sdk version
-    - android-23
     - android-24
     - android-25
 
@@ -43,9 +37,7 @@ before_script:
     - android-wait-for-emulator
     - adb shell input keyevent 82 &
 script:
-    - ./gradlew clean test
-    #- ./gradlew assembleDebug jacocoTestReport assembleAndroidTest
-    #- ./gradlew connectedAndroidTest -PdisablePreDex --stacktrace
+    - ./gradlew clean test connectedAndroidTest
 
 before_install:
     - pip install --user codecov
