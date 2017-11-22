@@ -10,14 +10,15 @@ env:
     - API=android-24 ABI=armeabi-v7a
     - API=android-24 ABI=arm64-v8a
 
-
 android:
+
   components:
     # tools is required twice
     - tools
     - platform-tools
     - tools
-    - build-tools-25.0.2
+    #- build-tools-25.0.2
+    - build-tools-26.0.2
     #- sys-img-armeabi-v7a-android-24
     #- sys-img-armeabi-v7a-google_apis-25
     #- sys-img-armeabi-v7a-android-21
@@ -28,6 +29,11 @@ android:
     - android-25
 
     - extra-google-google_play_services
+
+licenses:
+  - 'android-sdk-preview-license-.+'
+  - 'android-skd-license-.+'
+  - 'google-gdk-license-.+'
 
 before_script:
     - android list targets
