@@ -167,10 +167,15 @@ public class NetworkUtils {
         return downloadPictures;
     }
 
-    public static String getBaseUrl(String link) throws MalformedURLException {
+    public static String getBaseUrl(String link) {
 
 
-        URL url = new URL(link);
+        URL url = null;
+        try {
+            url = new URL(link);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         String baseUrl =  url.getAuthority();
         return baseUrl;
 
