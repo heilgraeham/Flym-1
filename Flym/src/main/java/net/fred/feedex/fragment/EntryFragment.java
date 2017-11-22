@@ -91,6 +91,8 @@ public class EntryFragment extends SwipeRefreshFragment implements BaseActivity.
     private ViewPager mEntryPager;
     private EntryPagerAdapter mEntryPagerAdapter;
 
+    private Menu mMenu;
+
     private View mCancelFullscreenBtn;
 
     @Override
@@ -196,13 +198,38 @@ public class EntryFragment extends SwipeRefreshFragment implements BaseActivity.
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.entry, menu);
-
+        mMenu = menu;
         if (mFavorite) {
             MenuItem item = menu.findItem(R.id.menu_star);
             item.setTitle(R.string.menu_unstar).setIcon(R.drawable.rating_important);
         }
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public void favoriteEntry(MenuItem item) {
+        if (item != null) {
+            if (mFavorite) {
+                item.setTitle(R.string.menu_unstar).setIcon(R.drawable.rating_important);
+            } else {
+                item.setTitle(R.string.menu_star).setIcon(R.drawable.rating_not_important);
+            }
+        }
+        final Uri uri = ContentUris.withAppendedId(mBaseUri, mEntriesIds[mCurrentPagerPos]);
+        new Thread() {
+            @Override
+            public void run() {
+                ContentValues values = new ContentValues();
+                values.put(EntryColumns.IS_FAVORITE, mFavorite ? 1 : 0);
+                ContentResolver cr = MainApplication.getContext().getContentResolver();
+                cr.update(uri, values, null, null);
+
+                // Update the cursor
+                Cursor updatedCursor = cr.query(uri, null, null, null, null);
+                updatedCursor.moveToFirst();
+                mEntryPagerAdapter.setUpdatedCursor(mCurrentPagerPos, updatedCursor);
+            }
+        }.start();
     }
 
     @Override
@@ -213,28 +240,7 @@ public class EntryFragment extends SwipeRefreshFragment implements BaseActivity.
             switch (item.getItemId()) {
                 case R.id.menu_star: {
                     mFavorite = !mFavorite;
-
-                    if (mFavorite) {
-                        item.setTitle(R.string.menu_unstar).setIcon(R.drawable.rating_important);
-                    } else {
-                        item.setTitle(R.string.menu_star).setIcon(R.drawable.rating_not_important);
-                    }
-
-                    final Uri uri = ContentUris.withAppendedId(mBaseUri, mEntriesIds[mCurrentPagerPos]);
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            ContentValues values = new ContentValues();
-                            values.put(EntryColumns.IS_FAVORITE, mFavorite ? 1 : 0);
-                            ContentResolver cr = MainApplication.getContext().getContentResolver();
-                            cr.update(uri, values, null, null);
-
-                            // Update the cursor
-                            Cursor updatedCursor = cr.query(uri, null, null, null, null);
-                            updatedCursor.moveToFirst();
-                            mEntryPagerAdapter.setUpdatedCursor(mCurrentPagerPos, updatedCursor);
-                        }
-                    }.start();
+                    favoriteEntry(item);
                     break;
                 }
                 case R.id.menu_share: {
@@ -465,6 +471,48 @@ public class EntryFragment extends SwipeRefreshFragment implements BaseActivity.
         activity.setImmersiveFullScreen(fullScreen);
     }
 
+    public String getEntryComment() {
+        ContentResolver cr = MainApplication.getContext().getContentResolver();
+        String [] requestedColumns = {
+                EntryColumns.COMMENT,
+        };
+        Cursor entry = cr.query(FeedData.EntryColumns.CONTENT_URI,
+                requestedColumns,
+                FeedData.EntryColumns._ID + "=" + mEntriesIds[mCurrentPagerPos] + "",
+                null, null);
+        if(entry != null) {
+            if (entry.moveToFirst()) {
+                return entry.getString(entry.getColumnIndex(EntryColumns.COMMENT));
+            }
+        }
+        entry.close();
+        return null;
+    }
+
+    private void updateCommentDialog() {
+        final Dialog builder = new Dialog(getActivity());
+        builder.setTitle("Save Comment");
+        builder.setContentView(R.layout.dialog_comment);
+        Button addMagazineButton = (Button) builder.findViewById(R.id.dialog_comment_btn);
+        final EditText commentEditText = (EditText) builder.findViewById(R.id.dialog_comment_edt);
+        String comment = getEntryComment();
+        if (comment != null) {
+            commentEditText.setText(comment);
+        }
+        addMagazineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String comment = commentEditText.getText().toString();
+                ContentResolver cr = MainApplication.getContext().getContentResolver();
+                ContentValues values = new ContentValues();
+                values.put(EntryColumns.COMMENT, comment);
+                cr.update(FeedData.EntryColumns.CONTENT_URI, values, FeedData.EntryColumns._ID + "=" + mEntriesIds[mCurrentPagerPos], null);
+                builder.dismiss();
+            }
+        });
+        builder.show();
+    }
+
     @Override
     public void onClickOriginalText() {
         getActivity().runOnUiThread(new Runnable() {
@@ -514,6 +562,17 @@ public class EntryFragment extends SwipeRefreshFragment implements BaseActivity.
                 });
             }
         }
+    }
+
+    @Override
+    public void onClickViewComment() {
+        updateCommentDialog();
+    }
+
+    @Override
+    public void onClickAddComment() {
+        favoriteEntry(null);
+        updateCommentDialog();
     }
 
     @Override
@@ -690,7 +749,12 @@ public class EntryFragment extends SwipeRefreshFragment implements BaseActivity.
                     String title = newCursor.getString(mTitlePos);
                     String enclosure = newCursor.getString(mEnclosurePos);
 
-                    view.setHtml(mEntriesIds[pagerPos], title, link, contentText, enclosure, author, timestamp, mPreferFullText);
+                    boolean hasComment = false;
+                    String entryComment = getEntryComment();
+                    if (entryComment != null && !entryComment.equals("")) {
+                        hasComment = true;
+                    }
+                    view.setHtml(mEntriesIds[pagerPos], title, link, contentText, enclosure, author, timestamp, mPreferFullText, hasComment);
                     view.setTag(newCursor);
 
                     if (pagerPos == mCurrentPagerPos) {

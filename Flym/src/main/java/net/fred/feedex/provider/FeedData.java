@@ -179,6 +179,8 @@ public class FeedData {
         public static final String WHERE_READ = EntryColumns.IS_READ + Constants.DB_IS_TRUE;
         public static final String WHERE_UNREAD = "(" + EntryColumns.IS_READ + Constants.DB_IS_NULL + Constants.DB_OR + EntryColumns.IS_READ + Constants.DB_IS_FALSE + ')';
         public static final String WHERE_NOT_FAVORITE = "(" + EntryColumns.IS_FAVORITE + Constants.DB_IS_NULL + Constants.DB_OR + EntryColumns.IS_FAVORITE + Constants.DB_IS_FALSE + ')';
+        public static final String COMMENT = "comment";
+
 
         public static Uri ENTRIES_FOR_FEED_CONTENT_URI(String feedId) {
             return Uri.parse(CONTENT_AUTHORITY + "/feeds/" + feedId + "/entries");
@@ -186,7 +188,7 @@ public class FeedData {
 
         public static final String[][] COLUMNS = new String[][]{{_ID, TYPE_PRIMARY_KEY}, {FEED_ID, TYPE_EXTERNAL_ID}, {TITLE, TYPE_TEXT},
                 {ABSTRACT, TYPE_TEXT}, {MOBILIZED_HTML, TYPE_TEXT}, {DATE, TYPE_DATE_TIME}, {FETCH_DATE, TYPE_DATE_TIME}, {IS_READ, TYPE_BOOLEAN}, {LINK, TYPE_TEXT},
-                {IS_FAVORITE, TYPE_BOOLEAN}, {ENCLOSURE, TYPE_TEXT}, {GUID, TYPE_TEXT}, {AUTHOR, TYPE_TEXT}, {IMAGE_URL, TYPE_TEXT}};
+                {IS_FAVORITE, TYPE_BOOLEAN}, {ENCLOSURE, TYPE_TEXT}, {GUID, TYPE_TEXT}, {AUTHOR, TYPE_TEXT}, {IMAGE_URL, TYPE_TEXT}, {COMMENT, TYPE_TEXT}};
 
         public static Uri ENTRIES_FOR_FEED_CONTENT_URI(long feedId) {
             return Uri.parse(CONTENT_AUTHORITY + "/feeds/" + feedId + "/entries");
