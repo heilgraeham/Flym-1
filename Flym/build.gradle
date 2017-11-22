@@ -13,6 +13,11 @@ android {
         versionName "1.9.7"
     }
 
+adbOptions {
+    timeOutInMs 20 * 60 * 1000  // 20 minutes
+    installOptions "-d","-t"
+    }
+
     lintOptions {
         // if true, stop the gradle build if errors are found
         abortOnError true
