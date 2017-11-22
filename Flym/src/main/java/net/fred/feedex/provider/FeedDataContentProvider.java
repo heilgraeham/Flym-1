@@ -538,6 +538,7 @@ public class FeedDataContentProvider extends ContentProvider {
                 where.append(FilterColumns.FEED_ID).append('=').append(uri.getPathSegments().get(1));
                 break;
             }
+            case URI_ENTRY_FOR_MAGAZINE:
             case URI_ENTRY_FOR_FEED:
             case URI_ENTRY_FOR_GROUP:
             case URI_SEARCH_ENTRY: {
