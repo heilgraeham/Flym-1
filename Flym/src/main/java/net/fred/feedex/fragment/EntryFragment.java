@@ -313,7 +313,6 @@ public class EntryFragment extends SwipeRefreshFragment implements BaseActivity.
                                         ContentResolver cr = MainApplication.getContext().getContentResolver();
                                         cr.insert(FeedData.MagazineColumns.CONTENT_URI, values);
                                         builderCreateMagazine.dismiss();
-                                        builder.show();
                                     }
                                     else {
                                         createMagazineEditText.setText("Add Title");

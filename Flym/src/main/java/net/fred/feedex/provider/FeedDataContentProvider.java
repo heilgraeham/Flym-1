@@ -50,6 +50,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -165,7 +166,7 @@ public class FeedDataContentProvider extends ContentProvider {
 
         if (!uriSearchParam.isEmpty()) {
             uriSearchParam = DatabaseUtils.sqlEscapeString("%" + Uri.decode(uriSearchParam) + "%");
-            return EntryColumns.TITLE + " LIKE " + uriSearchParam + Constants.DB_OR + EntryColumns.ABSTRACT + " LIKE " + uriSearchParam + Constants.DB_OR + EntryColumns.MOBILIZED_HTML + " LIKE " + uriSearchParam;
+            return "(" + EntryColumns.TITLE + " LIKE " + uriSearchParam + Constants.DB_OR + EntryColumns.ABSTRACT + " LIKE " + uriSearchParam + Constants.DB_OR + EntryColumns.MOBILIZED_HTML + " LIKE " + uriSearchParam + ")";
         } else {
             return "1 = 2"; // to have 0 result with an empty search
         }
@@ -284,19 +285,32 @@ public class FeedDataContentProvider extends ContentProvider {
                 break;
             }
             case URI_ENTRIES_FOR_FEED: {
+                SharedPreferences.Editor editor = getContext().getSharedPreferences("SEARCH", Context.MODE_PRIVATE).edit();
                 queryBuilder.setTables(FeedData.ENTRIES_TABLE_WITH_FEED_INFO);
-                queryBuilder.appendWhere(new StringBuilder(EntryColumns.FEED_ID).append('=').append(uri.getPathSegments().get(1)));
+                String where = new StringBuilder(EntryColumns.FEED_ID).append('=').append(uri.getPathSegments().get(1)).toString();
+                queryBuilder.appendWhere(where);
+                editor.putString("WHERE",where);
+                editor.commit();
                 break;
             }
             case URI_ENTRIES_FOR_GROUP: {
+                SharedPreferences.Editor editor = getContext().getSharedPreferences("SEARCH", Context.MODE_PRIVATE).edit();
                 queryBuilder.setTables(FeedData.ENTRIES_TABLE_WITH_FEED_INFO);
-                queryBuilder.appendWhere(new StringBuilder(FeedColumns.GROUP_ID).append('=').append(uri.getPathSegments().get(1)));
+                String where = new StringBuilder(FeedColumns.GROUP_ID).append('=').append(uri.getPathSegments().get(1)).toString();
+                queryBuilder.appendWhere(where);
+                editor.putString("WHERE",where);
+                editor.commit();
                 break;
             }
             case URI_ENTRIES: {
+                SharedPreferences.Editor editor = getContext().getSharedPreferences("SEARCH", Context.MODE_PRIVATE).edit();
                 queryBuilder.setTables(FeedData.ENTRIES_TABLE_WITH_FEED_INFO);
+                editor.putString("WHERE","");
+                editor.commit();
                 break;
             }
+            case URI_FAVORITES_ENTRY:
+            case URI_UNREAD_ENTRIES_ENTRY:
             case URI_ENTRY: {
                 queryBuilder.setTables(FeedData.ENTRIES_TABLE_WITH_FEED_INFO);
                 queryBuilder.appendWhere(new StringBuilder(EntryColumns._ID).append('=').append(uri.getPathSegments().get(1)));
@@ -312,6 +326,7 @@ public class FeedDataContentProvider extends ContentProvider {
                 break;
             }
             case URI_ENTRIES_FOR_MAGAZINE: {
+                SharedPreferences.Editor editor = getContext().getSharedPreferences("SEARCH", Context.MODE_PRIVATE).edit();
                 String entries = "";
                 Cursor c2 = database.rawQuery("SELECT " + FeedData.MagazineColumns.ENTRY_IDS +
                         " FROM " + FeedData.MagazineColumns.TABLE_NAME + " WHERE " + FeedData.MagazineColumns.TABLE_NAME + "." + FeedData.MagazineColumns._ID +
@@ -320,24 +335,36 @@ public class FeedDataContentProvider extends ContentProvider {
                     entries = c2.getString(0);
                 }
                 queryBuilder.setTables(FeedData.ENTRIES_TABLE_WITH_FEED_INFO);
-                queryBuilder.appendWhere(new StringBuilder(FeedData.EntryColumns._ID).append(" in (").append(entries).append(")"));
+                String where = new StringBuilder(FeedData.EntryColumns._ID).append(" in (").append(entries).append(")").toString();
+                queryBuilder.appendWhere(where);
+                editor.putString("WHERE",where);
+                editor.commit();
                 break;
             }
             case URI_UNREAD_ENTRIES: {
+                SharedPreferences.Editor editor = getContext().getSharedPreferences("SEARCH", Context.MODE_PRIVATE).edit();
                 queryBuilder.setTables(FeedData.ENTRIES_TABLE_WITH_FEED_INFO);
                 queryBuilder.appendWhere(EntryColumns.WHERE_UNREAD);
+                editor.putString("WHERE",EntryColumns.WHERE_UNREAD);
+                editor.commit();
                 break;
             }
             case URI_SEARCH: {
                 queryBuilder.setTables(FeedData.ENTRIES_TABLE_WITH_FEED_INFO);
-                queryBuilder.appendWhere(getSearchWhereClause(uri.getPathSegments().get(2)));
+                String restrictionString = getContext().getSharedPreferences("SEARCH",Context.MODE_PRIVATE).getString("WHERE", "");
+                if(restrictionString.length()>0)
+                    queryBuilder.appendWhere(new StringBuilder(restrictionString).append(" AND ").append(getSearchWhereClause(uri.getPathSegments().get(2))));
+                else
+                    queryBuilder.appendWhere(new StringBuilder(restrictionString).append(getSearchWhereClause(uri.getPathSegments().get(2))));
                 break;
             }
-            case URI_FAVORITES_ENTRY:
-            case URI_UNREAD_ENTRIES_ENTRY:
             case URI_FAVORITES: {
+                SharedPreferences.Editor editor = getContext().getSharedPreferences("SEARCH", Context.MODE_PRIVATE).edit();
                 queryBuilder.setTables(FeedData.ENTRIES_TABLE_WITH_FEED_INFO);
-                queryBuilder.appendWhere(new StringBuilder(EntryColumns.IS_FAVORITE).append(Constants.DB_IS_TRUE));
+                String where = new StringBuilder(EntryColumns.IS_FAVORITE).append(Constants.DB_IS_TRUE).toString();
+                queryBuilder.appendWhere(where);
+                editor.putString("WHERE",where);
+                editor.commit();
                 break;
             }
             case URI_TASKS: {
