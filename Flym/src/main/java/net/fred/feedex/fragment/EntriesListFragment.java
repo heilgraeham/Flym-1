@@ -160,6 +160,7 @@ public class EntriesListFragment extends SwipeRefreshListFragment {
 
             mEntriesCursorAdapter = new EntriesCursorAdapter(getActivity(), mCurrentUri, Constants.EMPTY_CURSOR, mShowFeedInfo);
         }
+        getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -556,6 +556,18 @@ public class FeedDataContentProvider extends ContentProvider {
                 where.append(EntryColumns.FEED_ID).append(" IN (SELECT ").append(FeedColumns._ID).append(" FROM ").append(FeedColumns.TABLE_NAME).append(" WHERE ").append(FeedColumns.GROUP_ID).append('=').append(uri.getPathSegments().get(1)).append(')');
                 break;
             }
+            case URI_ENTRIES_FOR_MAGAZINE: {
+                String entries = "";
+                Cursor c2 = database.rawQuery("SELECT " + FeedData.MagazineColumns.ENTRY_IDS +
+                        " FROM " + FeedData.MagazineColumns.TABLE_NAME + " WHERE " + FeedData.MagazineColumns.TABLE_NAME + "." + FeedData.MagazineColumns._ID +
+                        " = " + uri.getPathSegments().get(1), new String[] {});
+                if(c2.moveToFirst()) {
+                    entries = c2.getString(0);
+                }
+                table = EntryColumns.TABLE_NAME;
+                where.append(FeedData.EntryColumns._ID).append(" in (").append(entries).append(")");
+                break;
+            }
             case URI_ENTRIES: {
                 table = EntryColumns.TABLE_NAME;
                 break;

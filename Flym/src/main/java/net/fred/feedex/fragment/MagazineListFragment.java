@@ -3,6 +3,7 @@ package net.fred.feedex.fragment;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -29,6 +30,7 @@ public class MagazineListFragment extends ListFragment implements LoaderManager.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getLoaderManager().initLoader(0, null, this);
+        getActivity().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
     }
 
 
