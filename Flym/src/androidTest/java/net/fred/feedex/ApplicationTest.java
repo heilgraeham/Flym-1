@@ -59,14 +59,14 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 //        }
 //    }
 
-    public void testArticleTextExtractorNiceOppai() throws Exception {
-        String link = "http://www.niceoppai.net/bleach/654/?all";
-        HttpURLConnection connection = NetworkUtils.setupConnection(link);
-
-        String mobilizedHtml = ArticleTextExtractor.extractContent(connection.getInputStream(), "Ch. 654 Dec 04, 2015");
-        System.out.println(mobilizedHtml);
-        mobilizedHtml = HtmlUtils.improveHtmlContent(mobilizedHtml, NetworkUtils.getBaseUrl(link));
-    }
+//    public void testArticleTextExtractorNiceOppai() throws Exception {
+//        String link = "http://www.niceoppai.net/bleach/654/?all";
+//        HttpURLConnection connection = NetworkUtils.setupConnection(link);
+//
+//        String mobilizedHtml = ArticleTextExtractor.extractContent(connection.getInputStream(), "Ch. 654 Dec 04, 2015");
+//        System.out.println(mobilizedHtml);
+//        mobilizedHtml = HtmlUtils.improveHtmlContent(mobilizedHtml, NetworkUtils.getBaseUrl(link));
+//    }
 
 //    public void testRssAtomParserPubdate() throws Exception {
 //        RssAtomParser parser = new RssAtomParser(new Date(), 0, "1", "test2", "http://localhost/", false);
