@@ -20,6 +20,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
+import static net.fred.feedex.utils.NetworkUtils.getBaseUrl;
+
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */
@@ -73,9 +75,11 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
 
     public void testBaseURL() throws MalformedURLException {
-        String link = "https://docs.oracle.com/javase/7/docs/api/";
-        String result = "https://docs.oracle.com";
-        assertEquals(result, NetworkUtils.getBaseUrl(link));
+        String x = "http://www.cnn.com/2017/11/09/";
+
+        String correct = "www.cnn.com";
+
+        assertEquals(correct,getBaseUrl(x));
     }
 
     public void testHTTPURLConnection() throws IOException {
