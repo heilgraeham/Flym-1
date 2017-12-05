@@ -83,6 +83,7 @@ adbOptions {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testCoverageEnabled true
 //            signingConfig signingConfigs.release
         }
     }
