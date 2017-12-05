@@ -73,24 +73,4 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 //        assertEquals("Fri Dec 04 08:06:05 GMT+07:00 2015", parser.parsePubdateDate("Fri, 04 Dec 2015 01:06:05 +0000").toString());
 //    }
 
-
-    public void testBaseURL() throws MalformedURLException {
-        String x = "http://www.cnn.com/2017/11/09/";
-
-        String correct = "www.cnn.com";
-
-        assertEquals(correct,getBaseUrl(x));
-    }
-
-    public void testHTTPURLConnection() throws IOException {
-        String result = "okhttp3.internal.huc.OkHttpURLConnection:https://docs.oracle.com/javase/7/docs/api/";
-        assertEquals(result,NetworkUtils.setupConnection("https://docs.oracle.com/javase/7/docs/api/").toString());
-    }
-
-    public void testHTTPURLConnectionUrl() throws IOException {
-        URL url = new URL("https://docs.oracle.com/javase/7/docs/api/");
-        String result = "okhttp3.internal.huc.OkHttpURLConnection:https://docs.oracle.com/javase/7/docs/api/";
-        assertEquals(result,NetworkUtils.setupConnection(url).toString());
-    }
-
 }
