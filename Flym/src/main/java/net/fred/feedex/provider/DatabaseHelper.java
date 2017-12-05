@@ -109,7 +109,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    private String createTable(String tableName, String[][] columns) {
+    public String createTable(String tableName, String[][] columns) {
         if (tableName == null || columns == null || columns.length == 0) {
             throw new IllegalArgumentException("Invalid parameters for creating table " + tableName);
         } else {
