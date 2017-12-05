@@ -318,36 +318,38 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
     protected void onDestroy() {
         if (getIntent().getAction().equals(Intent.ACTION_EDIT)) {
             String url = mUrlEditText.getText().toString();
-            ContentResolver cr = getContentResolver();
+            if (!url.isEmpty()) {
+                ContentResolver cr = getContentResolver();
 
-            Cursor cursor = null;
-            try {
-                cursor = getContentResolver().query(FeedColumns.CONTENT_URI, FeedColumns.PROJECTION_ID,
-                        FeedColumns.URL + Constants.DB_ARG, new String[]{url}, null);
+                Cursor cursor = null;
+                try {
+                    cursor = getContentResolver().query(FeedColumns.CONTENT_URI, FeedColumns.PROJECTION_ID,
+                            FeedColumns.URL + Constants.DB_ARG, new String[]{url}, null);
 
-                if (cursor != null && cursor.moveToFirst() && !getIntent().getData().getLastPathSegment().equals(cursor.getString(0))) {
-                    UiUtils.showMessage(EditFeedActivity.this, R.string.error_feed_url_exists);
-                } else {
-                    ContentValues values = new ContentValues();
+                    if (cursor != null && cursor.moveToFirst() && !getIntent().getData().getLastPathSegment().equals(cursor.getString(0))) {
+                        UiUtils.showMessage(EditFeedActivity.this, R.string.error_feed_url_exists);
+                    } else {
+                        ContentValues values = new ContentValues();
 
-                    if (!url.startsWith(Constants.HTTP_SCHEME) && !url.startsWith(Constants.HTTPS_SCHEME)) {
-                        url = Constants.HTTP_SCHEME + url;
+                        if (!url.startsWith(Constants.HTTP_SCHEME) && !url.startsWith(Constants.HTTPS_SCHEME)) {
+                            url = Constants.HTTP_SCHEME + url;
+                        }
+                        values.put(FeedColumns.URL, url);
+
+                        String name = mNameEditText.getText().toString();
+
+                        values.put(FeedColumns.NAME, name.trim().length() > 0 ? name : null);
+                        values.put(FeedColumns.RETRIEVE_FULLTEXT, mRetrieveFulltextCb.isChecked() ? 1 : null);
+                        values.put(FeedColumns.FETCH_MODE, 0);
+                        values.putNull(FeedColumns.ERROR);
+
+                        cr.update(getIntent().getData(), values, null, null);
                     }
-                    values.put(FeedColumns.URL, url);
-
-                    String name = mNameEditText.getText().toString();
-
-                    values.put(FeedColumns.NAME, name.trim().length() > 0 ? name : null);
-                    values.put(FeedColumns.RETRIEVE_FULLTEXT, mRetrieveFulltextCb.isChecked() ? 1 : null);
-                    values.put(FeedColumns.FETCH_MODE, 0);
-                    values.putNull(FeedColumns.ERROR);
-
-                    cr.update(getIntent().getData(), values, null, null);
-                }
-            } catch (Exception ignored) {
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
+                } catch (Exception ignored) {
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
                 }
             }
         }
