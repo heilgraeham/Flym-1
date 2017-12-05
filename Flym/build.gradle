@@ -30,6 +30,29 @@ adbOptions {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
+    testOptions{
+        unitTests.all {
+            jacoco{
+                includeNoLocationClasses = true
+            }
+        }
+    }
+
+    task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest'){
+        reports{
+            xml.enabled = true
+            html.enabled = true
+        }
+        def testTaskName = "clickme"
+        def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+        def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+        def mainSrc = "${project.projectDir}/src/main/java"
+
+        sourceDirectories = files([mainSrc])
+        classDirectories = files([debugTree])
+        executionData = files("${project.buildDir}/jacoco/${testTaskName}.exec")
+    }
+
 //    Properties properties = new Properties()
 //    properties.load(project.rootProject.file('local.properties').newDataInputStream())
 //
