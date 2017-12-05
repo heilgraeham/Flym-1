@@ -38,7 +38,7 @@ before_script:
     - adb shell input keyevent 82 &
 
 script:
-    - ./gradlew clean createDebugCoverageReports #test connectedCheck
+    - ./gradlew clean createDebugCoverageReport #test connectedCheck
 
 before_install:
     - pip install --user codecov
