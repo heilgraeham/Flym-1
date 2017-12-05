@@ -11,7 +11,7 @@ public class StringUtilsTest {
     @Test
     public void getDateTimeString() throws Exception {
 
-        assertEquals("Jan 15 11:44 PM",StringUtils.getDateTimeString(1313045029));
+        assertEquals("Jan 16 4:44 AM",StringUtils.getDateTimeString(1313045029));
 
     }
 
